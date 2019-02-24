@@ -73,7 +73,7 @@ const styles = StyleSheet.create ({
         marginLeft: 5,
         marginRight: 5,
         height: 50,
-        borderColor: 'blue',
+        borderColor: 'black',
         borderWidth: 1,
         paddingLeft: 5
     },

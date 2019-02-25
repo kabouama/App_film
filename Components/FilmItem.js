@@ -2,15 +2,17 @@
 //           <Text style={styles.title_text}>Titre du film</Text>
 
 import React from 'react'
-import { StyleSheet, View, Text, Image } from 'react-native'
+import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native'
 import { getImageFromApi } from '../API/TMDBApi'
 
 class FilmItem extends React.Component {
   render() {
-    const film = this.props.film //on recupere notre props film qui est dans search
+    const { film, _displayDetailForFilm } = this.props//.film //on recupere notre props film qui est dans search
+    //on recupere aussi la fonction displayDetailForFilm qui est dans 'Search.js'
     return (
         
-        <View style={styles.main_container}>
+        <TouchableOpacity style={styles.main_container}
+                          onPress= {() => _displayDetailForFilm(film.id)}>
             <Image
                 style={styles.image}
                 source={{uri: getImageFromApi(film.poster_path)}}
@@ -31,7 +33,7 @@ class FilmItem extends React.Component {
                   <Text style={styles.date_text}>{film.release_date}</Text>
                 </View>
             </View>
-        </View>
+        </TouchableOpacity>
     )
   }
 }

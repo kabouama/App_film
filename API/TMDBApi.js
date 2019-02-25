@@ -16,4 +16,11 @@ export function getImageFromApi(name) {
     // pareil on ne pouvait pas savoir car c'est ds la doc de l'api
 }
 
+export function getFilmDetailFromApi (id) {
+    const url2 = 'https://api.themoviedb.org/3/movie/' + id + '?api_key=' + API_TOKEN + 
+    '&language=fr'
+    return fetch(url2) //permet d'appeler l'api
+    .then((response) => response.json())
+    .catch((error) => console.error(error));
+}
 // export permet d'utiliser cette fonction dans nos components

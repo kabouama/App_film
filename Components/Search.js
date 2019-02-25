@@ -9,11 +9,16 @@ class Search extends React.Component {
     constructor(props) { //comment les component font passer des props les uns entre les autres
         super(props) // on reecri le constructeur de notre component 'search'
         // Ici on va créer les propriétés de notre component custom Search
-        this.state = { 
+        this.state = { //la state de notre component est utiliser pr stocker qlq infos de l'api
             films: [],
             isLoading: false
         } // on definit notre state avec un tableau de film
         this.searchedText = ""
+    }
+
+    _displayDetailForFilm = (idFilm) => { //fonction prend en param idFilm /-> (sythaxe tres bizarre)
+        //console.log("display film with id" + idFilm)
+        this.props.navigation.navigate("FilmDetail", { idFilm: idFilm })
     }
 
     _loadFilms() { // fonction qu'on va appeler qd on clic sur recherche donc dans -> onpress
@@ -43,6 +48,7 @@ class Search extends React.Component {
     }
 
     render() {
+        //console.log(this.props)
         return (
          <View style={styles.main_container}>
              <TextInput onSubmitEditing={() => this._loadFilms()} 
@@ -54,7 +60,8 @@ class Search extends React.Component {
              <FlatList
                 data={this.state.films} //Données que l'on souhaite afficher ||| on utilise notre tableau de films ds notre liste de films
                 keyExtractor={(item) => item.id.toString()} //React-native demande obligatoirement une key pr une liste
-                renderItem={({item}) => <FilmItem film={item}/>} //Rendu des données de notre list
+                renderItem={({item}) => <FilmItem film={item} _displayDetailForFilm= 
+                {this._displayDetailForFilm}/>} //Rendu des données de notre list
                                     //on cree notre propore props film
                                     //inconveniant des props c'est qu'elles sont definies par le parent
              />
@@ -67,7 +74,7 @@ class Search extends React.Component {
 const styles = StyleSheet.create ({
     main_container: {
         flex: 1,
-        marginTop: 20
+        //marginTop: 20// -> plus besoin si on utilise la navigation car elle decale tout toute seul
     },
     TextInput: {
         marginLeft: 5,

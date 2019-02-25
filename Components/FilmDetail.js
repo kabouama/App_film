@@ -1,5 +1,7 @@
 import React from 'react'
-import { StyleSheet, View, Text, ActivityIndicator } from 'react-native'
+import { StyleSheet, View, Text, ActivityIndicator, ScrollView, Image, /*Dimensions*/ } from 'react-native'
+import { getFilmDetailFromApi, getImageFromApi } from '../API/TMDBApi'
+//import { ScrollView } from 'react-native-gesture-handler';
 
 class FilmDetail extends React.Component {
     
@@ -13,6 +15,16 @@ class FilmDetail extends React.Component {
         }
     }
 
+    componentDidMount() { //On surcharge le cycle, a voir dans le screen d,OpenClassRoom
+        //console.log("filmdetail monté")
+        getFilmDetailFromApi(this.props.navigation.getParam('idFilm')).then(data => {
+            this.setState({
+                film: data,
+                isLoading: false //remet notre chargement a false
+            })
+        })
+    }
+
     _displayLoading() {
         if (this.state.isLoading) {
             return (
@@ -22,19 +34,42 @@ class FilmDetail extends React.Component {
             )
         }
     }
+
+    _displayFilm() {
+        const { film } = this.state
+        if (this.state.film != undefined) {
+            return (
+                <ScrollView style={styles.ScrollView_container}>
+                    <Image
+                        style={styles.image}
+                        source={{uri: getImageFromApi(film.backdrop_path)}}
+                    />
+                    <Text style={styles.text_container}> {this.state.film.title} </Text>
+                    <Text style={styles.detail}> 
+                        {this.state.film.overview}
+                    </Text>
+                </ScrollView>                
+            )
+        }
+    }
+
     render() {
-        const idFilm = this.props.navigation.getParam('idFilm')
+        //console.log("filmdetail rendu")
+        //const idFilm = this.props.navigation.getParam('idFilm')     
         return (
             <View style={styles.main_container}>
                 {this._displayLoading()}
+                {this._displayFilm()}
             </View>
         )
     }
 }
 
+//const win = Dimensions.get('window');
 const styles = StyleSheet.create({
     main_container: {
         flex: 1,
+        backgroundColor: 'rgba(52, 52, 52, 0.14)'
     },
     loading_container: {
         position: 'absolute', //permet de mettre ma vue de chargement par dessus mon ecran
@@ -44,6 +79,30 @@ const styles = StyleSheet.create({
         bottom: 0,
         alignItems: 'center',
         justifyContent: 'center'
+      },
+      crollView_container: {
+          flex: 1
+      },
+      image: {
+        alignSelf: 'stretch',
+        //width: win.width,
+        //height: win.height,
+        //width: 120,
+        height: 180,
+        margin: 5,
+        backgroundColor: 'gray'
+      },
+      text_container: {
+        fontSize: 30,
+        margin: 5,
+        fontWeight: 'bold',
+        textAlign: 'center',
+      },
+      detail: {
+        margin: 5,
+        fontStyle: 'italic',
+        color: 'grey',
+        fontWeight: 'bold'
       }
 })
 

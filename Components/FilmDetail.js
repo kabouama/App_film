@@ -1,8 +1,10 @@
 import React from 'react'
-import { StyleSheet, View, Text, ActivityIndicator, ScrollView, Image, /*Dimensions*/ } from 'react-native'
+import { StyleSheet, View, Text, ActivityIndicator, ScrollView, Image, TouchableOpacity, Button /*Dimensions*/ } from 'react-native'
 import { getFilmDetailFromApi, getImageFromApi } from '../API/TMDBApi'
 import moment from "moment"
 import numeral from "numeral"
+import { connect } from 'react-redux' /*connecte le store a notre component FilmDetail 
+                                    ---->(regarder en bas de la page dans le 'export')*/
 //import { ScrollView } from 'react-native-gesture-handler';
 
 class FilmDetail extends React.Component {
@@ -29,6 +31,11 @@ class FilmDetail extends React.Component {
         })
     }
 
+    componentDidUpdate() {
+        console.log("componentDidUpdate : ")
+        console.log(this.props.favoritesFilm)
+    }
+
     _displayLoading() {
         if (this.state.isLoading) {
             return (
@@ -39,6 +46,24 @@ class FilmDetail extends React.Component {
         }
     }
 
+    _toggleFavorite() { // Definition de notre action pour les favoris ici
+                        // notre action doit posseder un type et une valeur
+                        // on a definit l'action 'TOGGLE_FAVORITE' ds favoriteReducer.js
+        const action = { type: "TOGGLE_FAVORITE", value: this.state.film}
+        this.props.dispatch(action) /* dispatch permet de distribuer notre action au Store et 
+                                        a ses reducer. Diaspatch et dispo directement
+                                         car on a utilise la fonction connect
+                                         react-native mets alors directement dispatch a disposition
+                                         */
+    }
+
+    _displayFavoriteImage() {
+        var sourceImage = require('../Images/ic_favorite_border.png')
+        if (this.props.favoritesFilm)
+        
+    }
+
+    //TouchableOpacity replae 'Boutton' (ca permet de custom nos boutons)
     _displayFilm() {
         const { film } = this.state
         if (this.state.film != undefined) {
@@ -49,6 +74,15 @@ class FilmDetail extends React.Component {
                         source={{uri: getImageFromApi(film.backdrop_path)}}
                     />
                     <Text style={styles.title_text}> {this.state.film.title} </Text>
+
+
+                    <TouchableOpacity
+                        style={styles.favorite_container}
+                        onPress={() => this._toggleFavorite()}>
+                            {this._displayFavoriteImage()}
+                    </TouchableOpacity>
+
+
                     <Text style={styles.description}> 
                         {this.state.film.overview}
                     </Text>
@@ -81,6 +115,7 @@ class FilmDetail extends React.Component {
     }
 
     render() {
+        console.log(this.props)
         //console.log("filmdetail rendu")
         //const idFilm = this.props.navigation.getParam('idFilm')     
         return (
@@ -145,7 +180,42 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         marginRight: 5,
         marginTop: 5,
-      }
+      },
+      favorite_container: {
+        alignItems: 'center', // Alignement des components enfants sur l'axe secondaire, X ici
+    }
 })
 
-export default FilmDetail
+/*  on connecte le state de notre appli au component Filmdetail grace a la fonction mapStateToProps
+    C'est la doc de react-redux qui nous dit d'utiliser cette fonction pour les connecter
+*/
+const   mapStateToProps = (state) => { //state correspond au state global
+    //return state ---> si on s'arrete là on connecte TOUT le state de l'appli avec le component
+    return {
+        favoritesFilm: state.favoritesFilm  // mais la on connecte que ce qui nous interesse
+                                            // Tres important ds le cas ou on veut seulement 1 info
+    }
+}
+/*  En retournant le state de notre appli ds la fonction mapStateToProps
+    on vient de mapper le state de notre appli dans le props du comonent FilmDetail
+    alors maintenant -> ds le props du component FilmDetail, on a acces
+    au state de l'appli et donc aux films favoris
+*/
+
+export default connect(mapStateToProps)(FilmDetail) 
+// ici. On connecte le state de l'application avec les props du component FilmDetail.
+//on connecte notre store a notre component FilmDetail
+/*  si on sopecifier 'mapStateToProps dans la fonction 'connect', automatiquementm le component
+    est abonné au changement du store Redux ---> Des qu'il y a un changement notre component 
+    en sera informé 
+    ||
+    la valeur retournee par la fonction 'mapStateToProps est mappeée (fusionné) 
+    aux props de notre component
+*/
+
+/* on peut enlever le const mapStateToProps et faire : 
+        export default connect(state => state)(FilmDetail)*/
+
+/*  Notre store Redux et son reducer sont prêts et ils
+    sont capables de fournir le state global à nos components abonnés.
+*/

@@ -4,7 +4,7 @@ const initialState = { favoritesFilm: [] }
 // on cree initalState avec un tableau vide -> on mets le state nul initialiseé avec notre inialState
 function toggleFavorite(state = initialState, action) {//(state, action) { // Creation de notre REDUCER
     let nextState
-    switch (action.type) {  /*une action est un objet avec 2 parametres -> type(type d'action) &&
+    switch (action.type) {  /*une action est un objet avec 2 parametres -> 'type' (type d'action) &&
                             une value (objet aue l'on souhaite modifier ds le state) (pas obligatoire)*/
         case 'TOGGLE_FAVORITE':
             const favoritesFilmIndex = state.favoritesFilm.findIndex(item => item.id ===

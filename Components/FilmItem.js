@@ -4,8 +4,22 @@
 import React from 'react'
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native'
 import { getImageFromApi } from '../API/TMDBApi'
+i//mport { connect } from 'react-redux'
 
 class FilmItem extends React.Component {
+
+  _MaFonctionqdTapui() {
+    var imageSource = require('../Images/ic_favorite.png')
+    if (this.props.isFilmFavorite) {
+      return (
+        <Image
+          style = {styles.mon_coeur}
+          source = {imageSource}
+        />
+      )
+    }
+  }
+
   render() {
     const { film, _displayDetailForFilm } = this.props//.film //on recupere notre props film qui est dans search
     //on recupere aussi la fonction displayDetailForFilm qui est dans 'Search.js'
@@ -19,6 +33,9 @@ class FilmItem extends React.Component {
             />
             <View style={styles.content_container}>
                 <View style={styles.header_container}>
+                  
+                  {this._MaFonctionqdTapui()}
+
                   <Text style={styles.title_text}>{film.title}</Text>
                   <Text style={styles.vote_text}>{film.vote_average}</Text>
                 </View>
@@ -83,6 +100,11 @@ const styles = StyleSheet.create({
   date_text: {
     textAlign: 'right',
     fontSize: 14
+  },
+  mon_coeur: {
+    width : 25,
+    height : 25,
+    marginRight: 5
   }
 })
 

@@ -3,6 +3,7 @@ import { StyleSheet, View, Button, TextInput, FlatList, Text, ActivityIndicator 
 import films from '../Helpers/filmsData' // notre props qu'on va envoyer dans filmItem
 import FilmItem from './FilmItem'
 import { getFilmsFromApiWithSearchedText } from '../API/TMDBApi'
+import { connect } from 'react-redux'
 
 class Search extends React.Component {
 
@@ -22,8 +23,8 @@ class Search extends React.Component {
     }
 
     _loadFilms() { // fonction qu'on va appeler qd on clic sur recherche donc dans -> onpress
-        this.setState({ isLoading: true })
         if (this.searchedText.length > 0) //on check si on a bien ecrit quelque chose
+            this.setState({ isLoading: true })
             getFilmsFromApiWithSearchedText(this.searchedText).then(data => 
                 this.setState({ 
                     films : data.results,
@@ -59,9 +60,19 @@ class Search extends React.Component {
              
              <FlatList
                 data={this.state.films} //Données que l'on souhaite afficher ||| on utilise notre tableau de films ds notre liste de films
+                extraData={this.props.favoritesFilm} //extraData rajoute une donne, des qu'elle est changer notre flatList est re rendu (utile qd notre 1ere data ne change pas)
                 keyExtractor={(item) => item.id.toString()} //React-native demande obligatoirement une key pr une liste
-                renderItem={({item}) => <FilmItem film={item} _displayDetailForFilm= 
-                {this._displayDetailForFilm}/>} //Rendu des données de notre list
+                renderItem={({item}) => 
+                <FilmItem 
+                //on cree notre propore props film qui ira ds notre component fils -> FilmItem
+                    film={item} 
+                    // Ajout d'une props isFilmFavorite pour indiquer à l'item d'afficher un 🖤 ou non
+                    isFilmFavorite = {(
+                        this.props.favoritesFilm.findIndex(
+                            film => film.id === item.id) !== -1) ? true : false
+                        }
+                    _displayDetailForFilm= {this._displayDetailForFilm}/>} 
+                                    //Rendu des données de notre list
                                     //on cree notre propore props film
                                     //inconveniant des props c'est qu'elles sont definies par le parent
              />
@@ -95,4 +106,10 @@ const styles = StyleSheet.create ({
       }
 })
 
-export default Search
+const myStateToProps = (state) => {
+    return {
+        favoritesFilm: state.favoritesFilm
+    }
+}
+
+export default connect(myStateToProps)(Search)

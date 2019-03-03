@@ -48,6 +48,16 @@ class Search extends React.Component {
         this.searchedText = text
     }
 
+    _searchFilms() {
+        this.page = 0
+        this.totalPages = 0
+        this.setState({
+          films: [],
+        }, () => {
+            this._loadFilms()
+        })
+      }
+
     render() {
         //console.log(this.props)
         return (

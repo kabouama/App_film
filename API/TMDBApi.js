@@ -11,6 +11,39 @@ export function getFilmsFromApiWithSearchedText(text)// Permet d'appeler l'api T
         .catch((error) => console.log(error)) // error -> on affiche un log avec l'error
 }
 
+export function getAllFilms()
+{
+    const url = 'https://api.themoviedb.org/3/discover/movie?api_key=' +
+    API_TOKEN + '&page=1&total_items=50&primary_release_date.gte=2014-09-15' + 
+    '&primary_release_date.lte=2020-10-22'
+
+    return fetch(url) //permet d'appeler l'api
+    .then((response) => response.json())
+    .catch((error) => console.error(error));
+}
+
+export function getAllFilms2()
+{
+    const url = 'https://api.themoviedb.org/3/discover/movie?api_key=' +
+    API_TOKEN + '&page=2&total_items=50&primary_release_date.gte=2014-09-15' + 
+    '&primary_release_date.lte=2020-10-22'
+
+    return fetch(url) //permet d'appeler l'api
+    .then((response) => response.json())
+    .catch((error) => console.error(error));
+}
+
+export function getAllFilms3()
+{
+    const url = 'https://api.themoviedb.org/3/discover/movie?api_key=' +
+    API_TOKEN + '&page=3&total_items=50&primary_release_date.gte=2014-09-15' + 
+    '&primary_release_date.lte=2020-10-22'
+
+    return fetch(url) //permet d'appeler l'api
+    .then((response) => response.json())
+    .catch((error) => console.error(error));
+}
+
 export function getImageFromApi(name) {
     return 'https://image.tmdb.org/t/p/w300' + name
     // pareil on ne pouvait pas savoir car c'est ds la doc de l'api

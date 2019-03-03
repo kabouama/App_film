@@ -6,6 +6,7 @@ import { createStackNavigator, createAppContainer, createBottomTabNavigator } fr
 import { StyleSheet, Image } from 'react-native'
 import FilmDetail from '../Components/FilmDetail'
 import Favorites from '../Components/Favorites'
+import { weekdaysShort } from 'moment';
 
 const SearchStackNavigator = createStackNavigator({
     Search: {// Ici j'ai appelé la vue "Search" mais on peut mettre ce que l'on veut.
@@ -24,6 +25,21 @@ const SearchStackNavigator = createStackNavigator({
     }
 })
 
+const FavoritesStackNavigatior = createStackNavigator({
+    Favorites: { // On cree ici la vue 'Favorites'
+        screen: Favorites,
+        navigationOptions:{
+            title: 'Favoriss'
+        }
+    },
+    FilmDetail: { // On cree ici la vue 'FilmDetail'
+        screen: FilmDetail,
+        navigationOptions: {
+            title: 'wesh',
+        }
+    }
+})
+
 const MoviesTabNavigator = createBottomTabNavigator({
     Search: {
 //        screen: Search
@@ -38,7 +54,7 @@ const MoviesTabNavigator = createBottomTabNavigator({
         }
     },
     Favorites: {
-        screen: Favorites,
+        screen: FavoritesStackNavigatior,
         navigationOptions: {
             tabBarIcon: () => {
                 return <Image

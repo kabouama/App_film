@@ -21,7 +21,7 @@ export function getAllFilms()
     .then((response) => response.json())
     .catch((error) => console.error(error));
 }
-
+/*
 export function getAllFilms2()
 {
     const url = 'https://api.themoviedb.org/3/discover/movie?api_key=' +
@@ -42,7 +42,7 @@ export function getAllFilms3()
     return fetch(url) //permet d'appeler l'api
     .then((response) => response.json())
     .catch((error) => console.error(error));
-}
+}*/
 
 export function getImageFromApi(name) {
     return 'https://image.tmdb.org/t/p/w300' + name

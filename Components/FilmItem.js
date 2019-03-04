@@ -4,13 +4,14 @@
 import React from 'react'
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native'
 import { getImageFromApi } from '../API/TMDBApi'
-i//mport { connect } from 'react-redux'
+//import { connect } from 'react-redux'
 
 class FilmItem extends React.Component {
 
   _MaFonctionqdTapui() {
     var imageSource = require('../Images/ic_favorite.png')
     if (this.props.isFilmFavorite) {
+      // Si la props isFilmFavorite vaut true, on affiche le 🖤
       return (
         <Image
           style = {styles.mon_coeur}

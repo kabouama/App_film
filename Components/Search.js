@@ -18,6 +18,10 @@ class Search extends React.Component {
             films: [],
             isLoading: false
         } // on definit notre state avec un tableau de film
+
+        this._loadFilms = this._loadFilms.bind(this)
+        this._searchFilms = this._searchFilms.bind(this)
+        //Ca permet de binder une fonction pour l'utiliser dans d'autres component et qu'elle garde sa valeur
     }
 
     _loadFilms() { // fonction qu'on va appeler qd on clic sur recherche donc dans -> onpress
@@ -67,6 +71,7 @@ class Search extends React.Component {
     }
 
     render() {
+        //console.log("display film with id" + this.idFilm)
         //console.log(this.props)
         return (
          <View style={styles.main_container}>
@@ -89,7 +94,7 @@ class Search extends React.Component {
                 page={this.page}//on indique la page a afficher
                 totalPages={this.totalPages} /* les infos page et totalPages vont être utile, côté component FilmList, 
                 pour ne pas déclencher l'évènement pour charger plus de film si on a atteint la dernière page */
-              />
+            />
 
             {this._displayLoading()}
          </View>

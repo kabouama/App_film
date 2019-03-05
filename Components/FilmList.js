@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, FlatList, View, Text, Button } from 'react-native'
+import { StyleSheet, FlatList, /*View, Text, Button*/ } from 'react-native'
 import FilmItem from './FilmItem'
 //import { getFilmsFromApiWithSearchedText, getAllFilms, getAllFilms2, getAllFilms3 } from '../API/TMDBApi'
 import { connect } from 'react-redux' 
@@ -55,6 +55,7 @@ class FilmList extends React.Component {
         return (
         //    <View>
                 <FlatList
+                    style={styles.list}
                     data={this.props.films} //Données que l'on souhaite afficher ||| on utilise notre tableau de films ds notre liste de films
                     extraData={this.props.favoritesFilm} //extraData rajoute une donne, des qu'elle est changer notre flatList est re rendu (utile qd notre 1ere data ne change pas)
                     keyExtractor={(item) => item.id.toString()} //React-native demande obligatoirement une key pr une liste
@@ -75,11 +76,11 @@ class FilmList extends React.Component {
                     )}
                     onEndReachedThreshold={0.5}
                     onEndReached={() => {
-                        if (this.props.page < this.props.totalPages) {
+                        if (this.props.films.length > 0 && this.props.page < this.props.totalPages) {
                             /*  On vérifie également qu'on n'a pas atteint la fin de la 
                                 pagination (totalPages) avant de charger plus d'éléments*/
                 // On appelle la méthode loadFilm du component Search pour charger plus de films
-                            this.props._loadFilms()
+                            this.props.loadFilms()
                         }
                     }}
                 /> 

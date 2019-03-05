@@ -6,7 +6,9 @@ import { createStackNavigator, createAppContainer, createBottomTabNavigator } fr
 import { StyleSheet, Image } from 'react-native'
 import FilmDetail from '../Components/FilmDetail'
 import Favorites from '../Components/Favorites'
+import AllFilms from '../Components/AllFilms'
 import { weekdaysShort } from 'moment';
+//import FilmList from './Components/FilmList'
 
 const SearchStackNavigator = createStackNavigator({
     Search: {// Ici j'ai appelé la vue "Search" mais on peut mettre ce que l'on veut.
@@ -25,7 +27,7 @@ const SearchStackNavigator = createStackNavigator({
     }
 })
 
-const FavoritesStackNavigatior = createStackNavigator({
+const FavoritesStackNavigator = createStackNavigator({
     Favorites: { // On cree ici la vue 'Favorites'
         screen: Favorites,
         navigationOptions:{
@@ -40,10 +42,27 @@ const FavoritesStackNavigatior = createStackNavigator({
     }
 })
 
+const AllFilmsNavigator = createStackNavigator ({
+    AllFilms: {
+        screen: AllFilms,
+        navigationOptions: {
+            title: 'Récents',
+        }
+    },
+    FilmDetail: {/* Encore une fois j'ai mis le même nom que celui du component mais
+    libre à vous de choisir un nom différent */
+        screen: FilmDetail,
+        navigationOptions: {
+            title: 'test'
+        }
+    }
+
+})
+
 const MoviesTabNavigator = createBottomTabNavigator({
     Search: {
 //        screen: Search
-        screen: SearchStackNavigator, //on appel notre vue search avc la navifation dans les detail
+        screen: SearchStackNavigator, //on appel notre vue search avc la navigation dans les detail
         navigationOptions: {
             tabBarIcon: () => {
 // On définit le rendu de nos icônes par les images récemment ajoutés au projet
@@ -54,7 +73,7 @@ const MoviesTabNavigator = createBottomTabNavigator({
         }
     },
     Favorites: {
-        screen: FavoritesStackNavigatior,
+        screen: FavoritesStackNavigator,
         navigationOptions: {
             tabBarIcon: () => {
                 return <Image
@@ -62,7 +81,17 @@ const MoviesTabNavigator = createBottomTabNavigator({
                     style={styles.icon}/>
             }
         }
-    }    
+    },
+    AllFilms: {
+        screen: AllFilmsNavigator,
+        navigationOptions: {
+            tabBarIcon: () => {
+                return <Image
+                    source={require('../Images/ic_favorite.png')}
+                    style={styles.icon}/>
+            }
+        }
+    }
 },
     {
         tabBarOptions: {

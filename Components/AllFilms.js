@@ -84,7 +84,7 @@ class AllFilms extends React.Component {
 
     render () {
         //const { film, _displayDetailForFilm, _searchFilms, _displayLoading } = this.props
-        console.log("--->" + this.state)
+        //console.log("--->" + this.state)
         {this._searchFilms}
         return (
             

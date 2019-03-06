@@ -87,7 +87,7 @@ const MoviesTabNavigator = createBottomTabNavigator({
         navigationOptions: {
             tabBarIcon: () => {
                 return <Image
-                    source={require('../Images/ic_favorite.png')}
+                    source={require('../Images/blur.png')}
                     style={styles.icon}/>
             }
         }

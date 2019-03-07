@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, StyleSheet, View, Button, TextInput, ActivityIndicator, ImageBackground } from 'react-native'
+import { Image, StyleSheet, View, Button, TextInput, ActivityIndicator, ImageBackground, SafeAreaView } from 'react-native'
 import films from '../Helpers/filmsData' // notre props qu'on va envoyer dans filmItem
 import FilmItem from './FilmItem'
 import { getFilmsFromApiWithSearchedText } from '../API/TMDBApi'
@@ -79,7 +79,7 @@ class Search extends React.Component {
     _background = () => {
         if (this.searchedText.length === 0) {
         return (
-            <ImageBackground source={require('../Images/liltle_avengers.png')}
+            <ImageBackground source={require('../Images/islam.png')}
                 style={{width: '100%', height: '100%'}}>
             </ImageBackground>
             )
@@ -89,41 +89,43 @@ class Search extends React.Component {
         //console.log("display film with id" + this.idFilm)
         //console.log(this.flag)
         return (
-         <View style={styles.main_container}>
-            <TextInput  
-                style={styles.TextInput}
-                placeholder="Titre du film"
-                onChangeText={(text) => this._searchTextInputChanged(text)}                                                 
-                onSubmitEditing={() => this._searchFilms()}
-            />             
-            <Button title="Rechercher" color= 'black' onPress={() => this._searchFilms()}/>
-            
-            {this._background()}
+        <SafeAreaView style={styles.main_container}>
+            <View style={styles.main_container}>
+                <TextInput  
+                    style={styles.TextInput}
+                    placeholder="Titre du film"
+                    onChangeText={(text) => this._searchTextInputChanged(text)}                                                 
+                    onSubmitEditing={() => this._searchFilms()}
+                />             
+                <Button title="Rechercher" color= 'black' onPress={() => this._searchFilms()}/>
+                
+                {this._background()}
 
-            <FilmList
-                films={this.state.films}
-                /* C'est bien le component Search qui récupère les
-                 films depuis l'API et on les transmet ici pour que le component FilmList les affiche*/
-                navigation={this.props.navigation}
-                /* Ici on transmet les informations de navigation 
-                pour permettre au component FilmList de naviguer vers le détail d'un film */
-                loadFilms={this._loadFilms}
-                /* _loadFilm charge les films suivants, ça concerne l'API, le component 
-                FilmList va juste appeler cette méthode quand l'utilisateur aura parcouru tous les films et 
-                c'est le component Search qui lui fournira les films suivants */
-                page={this.page}//on indique la page a afficher
-                totalPages={this.totalPages} 
-                /* les infos page et totalPages vont être utile, côté component FilmList, 
-                pour ne pas déclencher l'évènement pour charger plus de film si on a atteint la dernière page */
-                favoriteList={false} 
-                /* Ici j'ai simplement ajouté un booléen à false pour indiquer qu'on n'est
-                pas dans le cas de l'affichage de la liste des films favoris. 
-                Et ainsi pouvoir déclencher le chargement de plus de films lorsque l'utilisateur scrolle. */ 
-            />
+                <FilmList
+                    films={this.state.films}
+                    /* C'est bien le component Search qui récupère les
+                    films depuis l'API et on les transmet ici pour que le component FilmList les affiche*/
+                    navigation={this.props.navigation}
+                    /* Ici on transmet les informations de navigation 
+                    pour permettre au component FilmList de naviguer vers le détail d'un film */
+                    loadFilms={this._loadFilms}
+                    /* _loadFilm charge les films suivants, ça concerne l'API, le component 
+                    FilmList va juste appeler cette méthode quand l'utilisateur aura parcouru tous les films et 
+                    c'est le component Search qui lui fournira les films suivants */
+                    page={this.page}//on indique la page a afficher
+                    totalPages={this.totalPages} 
+                    /* les infos page et totalPages vont être utile, côté component FilmList, 
+                    pour ne pas déclencher l'évènement pour charger plus de film si on a atteint la dernière page */
+                    favoriteList={false} 
+                    /* Ici j'ai simplement ajouté un booléen à false pour indiquer qu'on n'est
+                    pas dans le cas de l'affichage de la liste des films favoris. 
+                    Et ainsi pouvoir déclencher le chargement de plus de films lorsque l'utilisateur scrolle. */ 
+                />
 
 
-            {this._displayLoading()}
-         </View>
+                {this._displayLoading()}
+            </View>
+        </SafeAreaView>
          
         )
     }

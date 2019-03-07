@@ -2,11 +2,30 @@
 //           <Text style={styles.title_text}>Titre du film</Text>
 
 import React from 'react'
-import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, Image, TouchableOpacity, Animated, Dimensions } from 'react-native'
 import { getImageFromApi } from '../API/TMDBApi'
+import { AnimatedRegion } from 'react-native-maps';
 //import { connect } from 'react-redux'
+import FadeIn from '../Animations/FadeIn'
+
 
 class FilmItem extends React.Component {
+
+  /*constructor(props) {
+    super(props)
+    this.state = {
+      positionLeft: new Animated.Value(Dimensions.get('window'). width)
+    }
+  }
+
+  componentDidMount() { //une fois que le component est monter
+    Animated.spring( //effet d'elasticité
+      this.state.positionLeft,
+      {
+        toValue: 0
+      }
+    ).start() //lance notre animation
+  }*/
 
   _MaFonctionqdTapui() {
     var imageSource = require('../Images/ic_favorite.png')
@@ -25,33 +44,34 @@ class FilmItem extends React.Component {
     const { film, _displayDetailForFilm } = this.props//.film //on recupere notre props film qui est dans search
     //on recupere aussi la fonction displayDetailForFilm qui est dans 'Search.js'
     return (
-        
-        <TouchableOpacity style={styles.main_container}
-                          onPress= {() => _displayDetailForFilm(film.id)}>
-            <Image
-                style={styles.image}
-                source={{uri: getImageFromApi(film.poster_path)}}
-            />
-            <View style={styles.content_container}>
-                <View style={styles.header_container}>
-                  
-                  {this._MaFonctionqdTapui()}
+        <FadeIn>
+          <TouchableOpacity style={styles.main_container}
+                            onPress= {() => _displayDetailForFilm(film.id)}>
+              <Image
+                  style={styles.image}
+                  source={{uri: getImageFromApi(film.poster_path)}}
+              />
+              <View style={styles.content_container}>
+                  <View style={styles.header_container}>
+                    
+                    {this._MaFonctionqdTapui()}
 
-                  <Text style={styles.title_text}>{film.title}</Text>
-                  <Text style={styles.vote_text}>{film.vote_average}</Text>
-                </View>
-                <View style={styles.description_container}>
-                  <Text style={styles.description_text} numberOfLines={6}>{film.overview}</Text>
-                  {
-                      /* La propriété numberOfLines permet de couper un texte si celui-ci
-                      est trop long, il suffit de définir un nombre maximum de ligne */
-                  }
-                </View>
-                <View style={styles.date_container}>
-                  <Text style={styles.date_text}>{film.release_date}</Text>
-                </View>
-            </View>
-        </TouchableOpacity>
+                    <Text style={styles.title_text}>{film.title}</Text>
+                    <Text style={styles.vote_text}>{film.vote_average}</Text>
+                  </View>
+                  <View style={styles.description_container}>
+                    <Text style={styles.description_text} numberOfLines={6}>{film.overview}</Text>
+                    {
+                        /* La propriété numberOfLines permet de couper un texte si celui-ci
+                        est trop long, il suffit de définir un nombre maximum de ligne */
+                    }
+                  </View>
+                  <View style={styles.date_container}>
+                    <Text style={styles.date_text}>{film.release_date}</Text>
+                  </View>
+              </View>
+          </TouchableOpacity>
+        </FadeIn>
     )
   }
 }

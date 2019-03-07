@@ -1,16 +1,33 @@
 import React from 'react'
-import { StyleSheet, View, Text, ActivityIndicator, ScrollView, Image, TouchableOpacity, /*Button, Dimensions*/ } from 'react-native'
+import { StyleSheet, Share, Platform, View, Text, ActivityIndicator, ScrollView, Image, TouchableOpacity, /*Button, Dimensions*/ } from 'react-native'
 import { getFilmDetailFromApi, getImageFromApi } from '../API/TMDBApi'
 import moment from "moment"
 import numeral from "numeral"
 import { connect } from 'react-redux' /*connecte le store a notre component FilmDetail 
                                     ---->(regarder en bas de la page dans le 'export')*/
 //import { ScrollView } from 'react-native-gesture-handler';
+import AnimCoeur from '../Animations/AnimCoeur'
 
 class FilmDetail extends React.Component {
     
         //console.log(this.props.navigation)
-        
+    static navigationOptions = ({ navigation }) => {
+        const { params } = navigation.state
+            // On accède à la fonction shareFilm et au film via les paramètres qu'on a ajouté à la navigation
+        if (params.film != undefined && Platform.OS === 'ios') {
+          return {
+              // On a besoin d'afficher une image, il faut donc passe par une Touchable une fois de plus
+              headerRight: <TouchableOpacity
+                              style={styles.share_touchable_headerrightbutton}
+                              onPress={() => params.shareFilm()}>
+                              <Image
+                                style={styles.share_image}
+                                source={require('../Images/ic_share.ios.png')} />
+                            </TouchableOpacity>
+          }
+        }
+    }
+
     constructor(props) {
         super(props)
         this.state = { // on va initialiser notre state
@@ -19,6 +36,18 @@ class FilmDetail extends React.Component {
             currentDate: new Date(),
             
         }
+        // Ne pas oublier de binder la fonction _shareFilm sinon, lorsqu'on va l'appeler depuis le headerRight de la navigation, this.state.film sera undefined et fera planter l'application
+        this._shareFilm = this._shareFilm.bind(this)
+ 
+    }
+
+      /* Fonction pour faire passer la fonction _shareFilm et le film aux paramètres de la navigation. 
+      Ainsi on aura accès à ces données au moment de définir le headerRight*/
+    _updateNavigationParams() {
+        this.props.navigation.setParams({
+        shareFilm: this._shareFilm,
+        film: this.state.film
+        })
     }
 
     componentDidMount() { //On surcharge le cycle, a voir dans le screen d'OpenClassRoom
@@ -39,10 +68,14 @@ class FilmDetail extends React.Component {
     this.setState({ isLoading: true })
 
         getFilmDetailFromApi(this.props.navigation.getParam('idFilm')).then(data => {
-            this.setState({
-                film: data,
-                isLoading: false //remet notre chargement a false
-            })
+            this.setState
+            (
+                {
+                    film: data,
+                    isLoading: false //remet notre chargement a false
+                }, 
+                () => {this._updateNavigationParams() }
+            )
         })
     }
 
@@ -50,6 +83,27 @@ class FilmDetail extends React.Component {
         console.log("componentDidUpdate : ")
         console.log(this.props.favoritesFilm)
     }*/
+
+    _shareFilm() {
+        const { film } = this.state
+        Share.share({ title: film.title, message: film.overview }) // fonction share de l'api avc titre du film et description
+    }
+
+
+    _displayFloatingActionButton() { //pour android
+        const { film } = this.state
+        if (film != undefined && Platform.OS === 'android') { // Uniquement sur Android et lorsque le film est chargé
+            return (
+            <TouchableOpacity
+                style={styles.share_touchable_floatingactionbutton}
+                onPress={() => this._shareFilm()}>
+                <Image
+                style={styles.share_image}
+                source={require('../Images/ic_share.png')}/>
+            </TouchableOpacity>
+            )
+        }
+    }
 
     _displayLoading() {
         if (this.state.isLoading) {
@@ -74,15 +128,22 @@ class FilmDetail extends React.Component {
 
     _displayFavoriteImage() {
         var sourceImage = require('../Images/ic_favorite_border.png')
+        var elargir = false /* Par défaut, si le film n'est pas en favoris, on veut qu'au clic 
+        sur le bouton, celui-ci s'agrandisse => shouldEnlarge à true*/
         if (this.props.favoritesFilm.findIndex(item => item.id === this.state.film.id) !== -1) {
             //Film dans nos favoris
             sourceImage = require('../Images/ic_favorite.png')
+            elargir = true /* Si le film est dans les favoris, on veut qu'au clic sur
+             le bouton, celui-ci se rétrécisse => shouldEnlarge à false */
         }
         return (
-            <Image
-                style = {styles.favorite_image}
-                source = {sourceImage}
-            />
+            <AnimCoeur
+                elargir={elargir}>
+                <Image
+                    style = {styles.favorite_image}
+                    source = {sourceImage}
+                />
+            </AnimCoeur>
         )
         
     }
@@ -98,6 +159,7 @@ class FilmDetail extends React.Component {
                         source={{uri: getImageFromApi(film.backdrop_path)}}
                     />
                     <Text style={styles.title_text}> {this.state.film.title} </Text>
+                    
 
                     <TouchableOpacity
                         style={styles.favorite_container}
@@ -145,6 +207,8 @@ class FilmDetail extends React.Component {
             <View style={styles.main_container}>
                 {this._displayLoading()}
                 {this._displayFilm()}
+                {this._displayFloatingActionButton()}
+                {this.navigationOptions}
             </View>
         )
     }
@@ -207,10 +271,34 @@ const styles = StyleSheet.create({
       favorite_container: {
         alignItems: 'center', // Alignement des components enfants sur l'axe secondaire, X ici
       },
-      favorite_image: {
+      /*favorite_image: {
           width: 40,
           height: 40
-      }
+      },*/
+      favorite_image: {
+        flex: 1,
+        width: null,
+        height: null, 
+        //on les mets a nul car on va adapter la taille de notre coeur apres
+      },
+      share_touchable_floatingactionbutton: {
+          position: 'absolute',//permet de mettre ma vue par dessus les autres
+          width: 60,
+          height: 60,
+          right: 30,
+          bottom: 30,
+          borderRadius: 30,
+          backgroundColor: '#e91e63',
+          justifyContent: 'center',
+          alignItems: 'center'
+        },
+        share_image: {
+          width: 30,
+          height: 30
+        },
+        share_touchable_headerrightbutton: {
+            marginRight: 8
+        }
 })
 
 /*  on connecte le state de notre appli au component Filmdetail grace a la fonction mapStateToProps

@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, Button, TextInput, FlatList, Text, ActivityIndicator } from 'react-native'
+import { Image, StyleSheet, View, Button, TextInput, ActivityIndicator, ImageBackground } from 'react-native'
 import films from '../Helpers/filmsData' // notre props qu'on va envoyer dans filmItem
 import FilmItem from './FilmItem'
 import { getFilmsFromApiWithSearchedText } from '../API/TMDBApi'
@@ -13,6 +13,7 @@ class Search extends React.Component {
         this.searchedText = ""
         this.page = 0
         this.totalPages = 0
+        this.flag = 1
         // Ici on va créer les propriétés de notre component custom Search
         this.state = { //la state de notre component est utiliser pr stocker qlq infos de l'api
             films: [],
@@ -27,6 +28,7 @@ class Search extends React.Component {
     _loadFilms() { // fonction qu'on va appeler qd on clic sur recherche donc dans -> onpress
         if (this.searchedText.length > 0) {//on check si on a bien ecrit quelque chose
             this.setState({ isLoading: true })
+            this.flag = 0
             getFilmsFromApiWithSearchedText(this.searchedText, this.page + 1).then(data => {
                 this.page = data.page
                 this.totalPages = data.total_pages
@@ -38,7 +40,11 @@ class Search extends React.Component {
             })
             // setState permet de modifier notre state tout en rechargeant notre component
             // on modifie toujours le state avec setState
-    }
+        }
+        else {
+                this.flag = 1
+                this._background()            
+        }
 }
 
     _searchTextInputChanged(text) {
@@ -70,9 +76,18 @@ class Search extends React.Component {
         }
     }
 
+    _background = () => {
+        if (this.searchedText.length === 0) {
+        return (
+            <ImageBackground source={require('../Images/liltle_avengers.png')}
+                style={{width: '100%', height: '100%'}}>
+            </ImageBackground>
+            )
+        }
+    }
     render() {
         //console.log("display film with id" + this.idFilm)
-        //console.log(this.props)
+        //console.log(this.flag)
         return (
          <View style={styles.main_container}>
             <TextInput  
@@ -81,8 +96,10 @@ class Search extends React.Component {
                 onChangeText={(text) => this._searchTextInputChanged(text)}                                                 
                 onSubmitEditing={() => this._searchFilms()}
             />             
-            <Button title="Rechercher" onPress={() => this._searchFilms()}/>
-             
+            <Button title="Rechercher" color= 'black' onPress={() => this._searchFilms()}/>
+            
+            {this._background()}
+
             <FilmList
                 films={this.state.films}
                 /* C'est bien le component Search qui récupère les
@@ -104,8 +121,10 @@ class Search extends React.Component {
                 Et ainsi pouvoir déclencher le chargement de plus de films lorsque l'utilisateur scrolle. */ 
             />
 
+
             {this._displayLoading()}
          </View>
+         
         )
     }
 }
